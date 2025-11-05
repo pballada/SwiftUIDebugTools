@@ -1,6 +1,7 @@
 #if DEBUG
 import SwiftUI
 
+// MARK: - Debug Modifier
 struct DebugModifier: ViewModifier {
     @ObservedObject var manager: DebugManager
     @State private var size: CGSize = .zero
@@ -18,14 +19,17 @@ struct DebugModifier: ViewModifier {
             .background(
                 GeometryReader { geo in
                     Color.clear
-                        .onAppear {
-                            updateMetrics(geo)
-                        }
-                        .onChange(of: geo.size) { _ in
-                                updateMetrics(geo)
-                        }
+                        .preference(key: SizePreferenceKey.self, value: geo.size)
+                        .preference(key: PositionPreferenceKey.self, value: geo.frame(in: .global))
                 }
             )
+            .onPreferenceChange(SizePreferenceKey.self) { newSize in
+                size = newSize
+            }
+            .onPreferenceChange(PositionPreferenceKey.self) { newFrame in
+                position = newFrame.origin
+                frame = newFrame
+            }
             .background(manager.randomColorsEnabled ? randomColor : Color.clear)
             .overlay(
                 Group {
@@ -53,21 +57,28 @@ struct DebugModifier: ViewModifier {
                 manager.inspectView(viewInfo)
             }
     }
-    
-    private func updateMetrics(_ geo: GeometryProxy) {
-        size = geo.size
-        position = geo.frame(in: .global).origin
-        frame = geo.frame(in: .global)
+}
+
+// Add these PreferenceKeys
+struct SizePreferenceKey: PreferenceKey {
+    static var defaultValue: CGSize = .zero
+    static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
+        value = nextValue()
     }
 }
 
-public extension View {
-    func debugView() -> some View {
-        #if DEBUG
-        modifier(DebugModifier(manager: DebugManager.shared))
-        #else
-        self
-        #endif
+struct PositionPreferenceKey: PreferenceKey {
+    static var defaultValue: CGRect = .zero
+    static func reduce(value: inout CGRect, nextValue: () -> CGRect) {
+        value = nextValue()
     }
 }
+
+// MARK: - View Extension
+extension View {
+    public func debugView() -> some View {
+        modifier(DebugModifier(manager: DebugManager.shared))
+    }
+}
+
 #endif

@@ -1,14 +1,15 @@
 #if DEBUG
 import SwiftUI
 
-public struct ViewInfo: Identifiable {
-    public let id = UUID()
-    public let size: CGSize
-    public let position: CGPoint
-    public let frame: CGRect
-    public let timestamp: Date
+// MARK: - View Info
+struct ViewInfo: Identifiable {
+    let id = UUID()
+    let size: CGSize
+    let position: CGPoint
+    let frame: CGRect
+    let timestamp: Date
     
-    public var description: String {
+    var description: String {
         """
         Size: \(Int(size.width)) × \(Int(size.height))
         Position: (\(Int(position.x)), \(Int(position.y)))
