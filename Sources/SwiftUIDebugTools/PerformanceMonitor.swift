@@ -71,44 +71,4 @@ class PerformanceMonitor: ObservableObject {
     }
 }
 
-
-struct PerformanceOverlay: View {
-    @ObservedObject var monitor = PerformanceMonitor.shared
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            HStack {
-                Image(systemName: "speedometer")
-                Text("Performance")
-                    .font(.caption.bold())
-            }
-            
-            HStack {
-                Text("FPS:")
-                    .font(.caption2)
-                Text(String(format: "%.1f", monitor.fps))
-                    .font(.caption2.monospacedDigit())
-                    .foregroundColor(fpsColor)
-            }
-            
-            HStack {
-                Text("Frame:")
-                    .font(.caption2)
-                Text(String(format: "%.2f ms", monitor.frameTime))
-                    .font(.caption2.monospacedDigit())
-            }
-        }
-        .padding(8)
-        .background(Color.black.opacity(0.8))
-        .foregroundColor(.white)
-        .cornerRadius(8)
-    }
-    
-    var fpsColor: Color {
-        if monitor.fps >= 55 { return .green }
-        else if monitor.fps >= 30 { return .yellow }
-        else { return .red }
-    }
-}
-
 #endif

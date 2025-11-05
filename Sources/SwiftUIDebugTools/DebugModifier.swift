@@ -1,6 +1,21 @@
 #if DEBUG
 import SwiftUI
 
+// MARK: - Grid Size Options
+public enum GridSize: Int, CaseIterable {
+    case small = 5
+    case medium = 8
+    case large = 20
+    
+    var spacing: CGFloat {
+        CGFloat(rawValue)
+    }
+    
+    var description: String {
+        "\(rawValue)px"
+    }
+}
+
 // MARK: - Debug Modifier
 struct DebugModifier: ViewModifier {
     @ObservedObject var manager: DebugManager
@@ -20,13 +35,13 @@ struct DebugModifier: ViewModifier {
                 GeometryReader { geo in
                     Color.clear
                         .preference(key: SizePreferenceKey.self, value: geo.size)
-                        .preference(key: PositionPreferenceKey.self, value: geo.frame(in: .global))
+                        .preference(key: FramePreferenceKey.self, value: geo.frame(in: .global))
                 }
             )
             .onPreferenceChange(SizePreferenceKey.self) { newSize in
                 size = newSize
             }
-            .onPreferenceChange(PositionPreferenceKey.self) { newFrame in
+            .onPreferenceChange(FramePreferenceKey.self) { newFrame in
                 position = newFrame.origin
                 frame = newFrame
             }
@@ -59,7 +74,7 @@ struct DebugModifier: ViewModifier {
     }
 }
 
-// Add these PreferenceKeys
+// MARK: - Preference Keys
 struct SizePreferenceKey: PreferenceKey {
     static var defaultValue: CGSize = .zero
     static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
@@ -67,7 +82,7 @@ struct SizePreferenceKey: PreferenceKey {
     }
 }
 
-struct PositionPreferenceKey: PreferenceKey {
+struct FramePreferenceKey: PreferenceKey {
     static var defaultValue: CGRect = .zero
     static func reduce(value: inout CGRect, nextValue: () -> CGRect) {
         value = nextValue()
@@ -75,8 +90,8 @@ struct PositionPreferenceKey: PreferenceKey {
 }
 
 // MARK: - View Extension
-extension View {
-    public func debugView() -> some View {
+public extension View {
+    func debugView() -> some View {
         modifier(DebugModifier(manager: DebugManager.shared))
     }
 }
