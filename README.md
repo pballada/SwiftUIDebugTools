@@ -39,7 +39,7 @@ Or in Xcode:
 
 ## Usage
 
-### Basic Setup
+### One-Line Setup
 ```swift
 import SwiftUI
 import SwiftUIDebugTools
@@ -49,37 +49,13 @@ struct YourApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .debugEnvironment() // Add this to enable debug tools!
+                .debugEnvironment() // That's it! All views are automatically debuggable
         }
     }
 }
 ```
 
-### Mark Views for Debugging
-```swift
-struct ContentView: View {
-    var body: some View {
-        VStack {
-            Text("Hello World")
-                .debugView() // Add to any view you want to debug
-            
-            HStack {
-                Rectangle()
-                    .fill(Color.blue)
-                    .frame(width: 100, height: 100)
-                    .debugView()
-                
-                Rectangle()
-                    .fill(Color.green)
-                    .frame(width: 150, height: 80)
-                    .debugView()
-            }
-            .debugView()
-        }
-        .debugView()
-    }
-}
-```
+That's all you need! The debug tools automatically detect and work with all views in your app - no additional code changes required.
 
 ### Toggle Debug Tools
 
@@ -112,7 +88,7 @@ Change the grid size from the bottom sheet interface when "Grid & Rulers" is ena
 Automatically applies semi-transparent random colors to each view, making it easy to visualize layout boundaries and view hierarchy.
 
 ### 📏 Show Dimensions
-Displays width and height measurements directly on each view with `.debugView()` modifier.
+Displays width and height measurements directly on each view automatically.
 
 ### ⚡ Performance Monitor
 Real-time performance metrics displayed in a compact card:
@@ -120,7 +96,7 @@ Real-time performance metrics displayed in a compact card:
 - **Frame Time**: Milliseconds per frame
 
 ### 🔍 Tap to Inspect
-Tap any view with `.debugView()` to see:
+Tap any view to see:
 - Size (width × height)
 - Position (x, y coordinates)
 - Frame (origin, width, height)
@@ -156,11 +132,11 @@ The example includes:
 ## How It Works
 
 SwiftUIDebugTools uses:
-- **Preference Keys** for iOS 15+ compatible geometry tracking
+- **UIKit View Hierarchy Traversal** to automatically detect and debug all views
+- **Transparent Overlay Window** for rendering debug visuals without modifying your views
 - **CADisplayLink** for accurate performance monitoring
 - **#if DEBUG** compilation to ensure zero overhead in release builds
 - **#if targetEnvironment(simulator)** for simulator-specific keyboard shortcuts
-- **UIViewRepresentable** for keyboard event handling
 
 ## API Reference
 
@@ -195,11 +171,11 @@ public enum GridSize: Int, CaseIterable {
 
 ### View Modifiers
 ```swift
-// Add debug capabilities to any view
-func debugView() -> some View
-
-// Enable debug environment (add to root view)
+// Enable debug environment (add to root view) - this is all you need!
 func debugEnvironment() -> some View
+
+// Optional: Legacy per-view debugging (no longer required)
+func debugView() -> some View
 ```
 
 ## Contributing

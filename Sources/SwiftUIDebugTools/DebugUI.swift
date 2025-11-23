@@ -113,8 +113,9 @@ struct PerformanceOverlay: View {
         .background(.ultraThinMaterial)
         .cornerRadius(10)
         .shadow(color: .black.opacity(0.1), radius: 5, y: 2)
+        .accessibilityIdentifier("debugtools.performance")
     }
-    
+
     var fpsColor: Color {
         if monitor.fps >= 55 { return .green }
         else if monitor.fps >= 30 { return .orange }
@@ -162,6 +163,7 @@ struct InspectorPanel: View {
             .padding(.horizontal)
             .padding(.bottom, 8)
             .transition(.move(edge: .bottom).combined(with: .opacity))
+            .accessibilityIdentifier("debugtools.inspector")
         }
     }
 }
@@ -230,7 +232,7 @@ struct DebugControlPanel: View {
                     title: "Grid & Rulers",
                     isOn: $manager.showGridAndRulersEnabled
                 )
-                
+
                 // Grid Size Picker
                 if manager.showGridAndRulersEnabled {
                     VStack(alignment: .leading, spacing: 8) {
@@ -252,7 +254,7 @@ struct DebugControlPanel: View {
             .padding(.horizontal, 20)
             
             // Helper text
-            Text("Tap any view with debugView() to inspect")
+            Text("Tap any view to inspect")
                 .font(.system(size: 11))
                 .foregroundColor(.secondary)
                 .padding(.top, 20)
@@ -262,6 +264,7 @@ struct DebugControlPanel: View {
         .background(.ultraThinMaterial)
         .cornerRadius(20, corners: [.topLeft, .topRight])
         .shadow(color: .black.opacity(0.2), radius: 20, y: -5)
+        .accessibilityIdentifier("debugtools.controlpanel")
     }
 }
 
@@ -328,6 +331,11 @@ struct DebugEnvironmentModifier: ViewModifier {
         content
             .environmentObject(DebugManager.shared)
             .overlay(DebugOverlay())
+            .background(
+                WindowSceneReader { windowScene in
+                    AutoDebugCoordinator.shared.activate(in: windowScene)
+                }
+            )
             #if targetEnvironment(simulator)
             .background(KeyboardShortcutHandler())
             #endif

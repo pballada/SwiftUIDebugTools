@@ -6,11 +6,11 @@ public enum GridSize: Int, CaseIterable {
     case small = 5
     case medium = 8
     case large = 20
-    
+
     var spacing: CGFloat {
         CGFloat(rawValue)
     }
-    
+
     var description: String {
         "\(rawValue)px"
     }
@@ -22,13 +22,13 @@ struct DebugModifier: ViewModifier {
     @State private var size: CGSize = .zero
     @State private var position: CGPoint = .zero
     @State private var frame: CGRect = .zero
-    
+
     let randomColor = Color(
         red: .random(in: 0...1),
         green: .random(in: 0...1),
         blue: .random(in: 0...1)
     ).opacity(0.3)
-    
+
     func body(content: Content) -> some View {
         content
             .background(
